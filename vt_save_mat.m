@@ -14,7 +14,11 @@ if iscell(mat) == 1
     
     for l=1:lines
         for c = 1:columns
-            fprintf(fid,mat{l,c},'\t');
+            if isnumeric(mat{l,c})
+                fprintf(fid, '%i', mat{l,c});
+            else
+                fprintf(fid,mat{l,c});
+            end
             fprintf(fid,'\t');
         end
         fprintf(fid,'\n');
