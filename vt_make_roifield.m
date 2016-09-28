@@ -44,6 +44,7 @@ function lf_roi = vt_make_roifield(cfg)
 % Version 1.3.: 21.11.2013: Added Sphere Option
 % Version 1.4.: 29.09.2014: Added Box Option
 % Version 1.5.: 18.03.2015: Changed the use of triplot to ft_plot_vol
+% Version 1.6.: 28.09.2016: Fixed an error in the Pythagoras Formula
 
 
 %% Set cfgs
@@ -179,7 +180,7 @@ end
 for i=1:length(lf.inside)
     fprintf('Getting the position of Point %i of %i\n',i,length(lf.inside))
     vox = lf.inside(i);
-    dist = sum(sqrt((ones(size(template_grid.pos,1),1)*lf.pos(vox,:) - template_grid.pos ).^2) ,2);
+    dist = sqrt(sum((ones(size(template_grid.pos,1),1)*lf.pos(vox,:) - template_grid.pos ).^2,2));
     [dummy,index] = min(dist);
     data(i) = ROI(index);
 end
