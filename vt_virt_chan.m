@@ -40,6 +40,8 @@ function [sp] = vt_virt_chan(cfg,alldata,indata);
 % Version 2.4: 18.11.2013: Added TFR and Taper Options
 % Version 2.5: 16.01.2014: Added Leadfield Normalization Option. Fixed
 % Label generation for the "location"-option
+% Version 2.6.: 20.02.2017: "Fixed" the new Fieldtrip Inside/Outside
+% Definition
 
 %% 1. Set Basics
 
@@ -253,6 +255,12 @@ end
 
 %% 5. Apply Spatial Filters to Data
 
+% HACK! Check if inside is logical -> Change to old inside/outside def.
+if islogical(lf2.inside)
+    lf2.outside = find(lf2.inside == 0);
+    lf2.inside = find(lf2.inside == 1);
+end
+% Hack end
 
 virt=cell(1,length(indata.trial)); % Virtual Electrode
 
