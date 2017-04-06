@@ -15,7 +15,7 @@ if iscell(mat) == 1
     for l=1:lines
         for c = 1:columns
             if isnumeric(mat{l,c})
-                fprintf(fid, '%i', mat{l,c});
+                fprintf(fid, '%.4f', mat{l,c});
             else
                 fprintf(fid,mat{l,c});
             end
@@ -27,7 +27,7 @@ if iscell(mat) == 1
 else    
     for l=1:lines
         for c = 1:columns
-            fprintf(fid,'%g ',mat(l,c));
+            fprintf(fid,'%.4f ',mat(l,c));
         end
         fprintf(fid,'\n');
     end
