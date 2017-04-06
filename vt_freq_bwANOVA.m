@@ -42,11 +42,9 @@ function stats = vt_freq_bwANOVA(cfg,varargin)
 % Version 5.: 30.10.2014 - Major Bugfix in varargin sorting
 % Version 6.: 19.05.2015 - Bug in Freqrange, Text output and Neighbour correction fixed
 % Version 6.1.: 30.05.2016 - Minor Bugs in Channel selection and Correction
+% Version 6.2.: 15.03.2017 - Minor Bugs in CFGs
+% Version 7.: 15.03.2017 - Another Major BugFix in Varargin Sorting 
 %% Set CFGs
-
-latency=cfg.latency; % Latency
-frequency=cfg.frequency; % Frequency
-
 ngr = cfg.ngr; % Number of Groups
 sgr = cfg.sgr; % Size of Groups
 nsub = sum(sgr); % How many subjects in total?
@@ -77,8 +75,7 @@ if isfield(cfg,'correctm') % Check for cfg
         minnb = cfg.minnb;
     else
         minnb = 1;
-    end
-    
+    end 
 else
     correctm = 'none';
 end
@@ -115,15 +112,12 @@ else
     freqrange = 1:nfreq;    
 end
 
+% Set Parameter
 if isfield(cfg,'parameter')
     param = cfg.parameter; % What do we want to work on
 else
     param = 'powspctrm';
 end
-
-
-ncond = cfg.ncond; % How many Freqs
-param = cfg.parameter; % What do we want to work on
 
 % Set Channel Options
 if isfield(cfg,'channel');
@@ -224,27 +218,23 @@ for n = 1:nchan % For Channels
         for f = 1:length(frequency);
         %fprintf('Statistical Stuff at Frequency %i of %i \n', f, length(frequency))
 
-        tmpind = [];
-        for g = 1:ngr
-            tmp = repmat(sgr(g),1,sgr(g)*ncond);
-            tmpind = [tmpind,tmp];
-        end
+        % Build the interweaved order for the ANOVA
+        varind = 0; % Set index to 0
 
-        varind = Mat(:,4);
-         % First Half
-         for i = 2:2:length(varind)/2
-            varind(i) = Mat(i,4)+tmpind(i);
-         end
-         
-         % Second Half
-         % First add length of group to all
-         for i = ((length(varind)/2)+1):1:length(varind)
-             varind(i) = Mat(i,4)+tmpind(i);
-         end
-         % Then add another length of group to every second item
-         for i = ((length(varind)/2)+2):2:length(varind)
-             varind(i) = varind(i)+tmpind(i);
-         end
+        for g = 1:ngr % Group-loop
+            a = 1:sgr(g); % Build a first vector for the index of the first condition
+            b = [];       % Build n vectors for the next conditions
+            tmp = [];
+            for nc = 1:ncond-1
+                tmp = (nc*sgr(g)+1):((nc+1)*sgr(g));
+                b = [b;tmp];
+            end
+            c = [a;b]; % concatenate the condition vectors
+            tmp = c(:); % flatten
+            c = tmp + varind(end); % count up 
+            varind = [varind;c]; % stitch together
+        end
+        varind=varind(2:end);
          
          
         ti = nearest(varargin{1}.time,latency(t));

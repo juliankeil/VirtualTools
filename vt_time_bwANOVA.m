@@ -35,16 +35,14 @@ function stats = vt_time_bwANOVA(cfg,varargin)
 % Version 2.: 08.05.2014 - Modified to Timelock Data
 % Version 3.: 12.05.2014 - Added Serial Anova (Timepoint-Wise) Option
 % Version 4.: Major BugFix in Varargin Sorting
-% Version 4.1.: Minor Bugfixes in Correction and Channel Option 30.05.2016
+% Version 4.1.: 30.05.2016 Minor Bugfixes in Correction and Channel Option
+% Version 4.2.: 15.03.2017 - Minor Bugs in CFGs
+% Version 5.: 15.03.2017 Another Major BugFix in Varargin Sorting 
 %% Set CFGs
-
-latency=cfg.latency; % Frequency
-
 ngr = cfg.ngr; % Number of Groups
 sgr = cfg.sgr; % Size of Groups
 nsub = sum(sgr); % How many subjects in total?
 ncond = cfg.ncond; % Number of Conditions
-
 
 % Set Alpha Level
 if isfield(cfg,'alpha')
@@ -70,14 +68,14 @@ if isfield(cfg,'correctm') % Check for cfg
         minnb = cfg.minnb;
     else
         minnb = 1;
-    end
-    
+    end    
 else
     correctm = 'none';
 end
 
 % Set Time Options
 if isfield(cfg,'latency');
+    latency = cfg.latency;
     if isfield(cfg,'avgovertime');
         if strcmpi(cfg.avgovertime,'yes');
             ntime = 1;
@@ -92,15 +90,12 @@ else
     timerange = 1:ntime;    
 end
 
+% Set Parameter
 if isfield(cfg,'parameter')
     param = cfg.parameter; % What do we want to work on
 else
     param = 'avg';
 end
-
-
-ncond = cfg.ncond; % How many Freqs
-param = cfg.parameter; % What do we want to work on
 
 % Set Channel Options
 if isfield(cfg,'channel');
@@ -139,7 +134,7 @@ for g=1:ngr
 end
 Mat(:,2) = Gr; % Group
 
-% Conditions -> That can be your Frequencies
+% Conditions
 Con = [];
 for c=1:ncond
     tmp = ones(nsub,1)*c;
@@ -155,7 +150,7 @@ for s=1:nsub;
     tmp = repmat(s,ncond,1);
     Subj = [Subj; tmp];
 end
-Mat(:,4) =  Subj; % 20 Subject X 3 Cond
+Mat(:,4) =  Subj;
 
 %% Plug in Data
 % Look for the right element and put it into the first column of Mat
@@ -171,7 +166,7 @@ if isfield(cfg,'avgoverchan')
     end
 end
 
-% Should we average over frequencies
+% Should we average over time
 if isfield(cfg,'avgovertime')
     if strcmpi(cfg.avgovertime,'yes')
         for v = 1:length(varargin)
@@ -187,27 +182,23 @@ for n = 1:nchan % For Channels
     for t = 1:length(latency);
     fprintf('Statistical Stuff at Timepoint %i of %i \n', t, length(latency))
    
-    tmpind = [];
-        for g = 1:ngr
-            tmp = repmat(sgr(g),1,sgr(g)*ncond);
-            tmpind = [tmpind,tmp];
-        end
+    % Build the interweaved order for the ANOVA
+    varind = 0; % Set index to 0
 
-        varind = Mat(:,4);
-         % First Half
-         for i = 2:2:length(varind)/2
-            varind(i) = Mat(i,4)+tmpind(i);
-         end
-         
-         % Second Half
-         % First add length of group to all
-         for i = ((length(varind)/2)+1):1:length(varind)
-             varind(i) = Mat(i,4)+tmpind(i);
-         end
-         % Then add another length of group to every second item
-         for i = ((length(varind)/2)+2):2:length(varind)
-             varind(i) = varind(i)+tmpind(i);
-         end  
+    for g = 1:ngr % Group-loop
+        a = 1:sgr(g); % Build a first vector for the index of the first condition
+        b = [];       % Build n vectors for the next conditions
+        tmp = [];
+        for nc = 1:ncond-1
+            tmp = (nc*sgr(g)+1):((nc+1)*sgr(g));
+            b = [b;tmp];
+        end
+        c = [a;b]; % concatenate the condition vectors
+        tmp = c(:); % flatten
+        c = tmp + varind(end); % count up 
+        varind = [varind;c]; % stitch together
+    end
+    varind=varind(2:end);
      
     fi = nearest(varargin{1}.time,latency(t));
     for s = 1:length(varind)
