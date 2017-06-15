@@ -45,7 +45,9 @@ function stats = vt_source_rmANOVA(cfg,varargin)
 %
 % (c) Julian Keil 02.06.2015
 % Version 1.0.: Implemented Function based on the other ANOVA functions
-% (12.12.2014
+% (12.12.2014)
+% Version 2.: Bugfix in the preparation for the Anova-Matrix. Now supports
+% nXm-Anovas (15.06.2017)
 
 %% Set CFGs
 
@@ -121,7 +123,7 @@ Mat = zeros(nsub*nIV1*nIV2,4); % Subjects X Conditons
 % IV1
 IV1 = [];
 for g=1:nIV1
-    tmp = ones(nIV1*nsub,1)*g;
+    tmp = repmat((ones(nsub,1)*g),nIV2,1);
     IV1 = [IV1; tmp ];
 end
 Mat(:,2) = IV1; % IV1
@@ -132,7 +134,7 @@ for c=1:nIV2
     tmp = ones(nsub,1)*c;
     IV2 = [IV2; tmp ];
 end
-Mat(:,3) = repmat(IV2,nIV2,1); % IV2
+Mat(:,3) = repmat(IV2,nIV1,1); % IV2
 
 % Subjects
 Subj = [];
