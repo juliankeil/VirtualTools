@@ -33,6 +33,8 @@ function stats = vt_time_rmANOVA(cfg,varargin)
 % (12.12.2014)
 % Version 3.: MAjor Buugfix in Neighbour-Correction (04.11.2015)
 % Version 3.1.: More Bugfixes in Correction thanks to Mathis (30.05.2016)
+% Version 4.: Bugfix in the preparation for the Anova-Matrix. Now supports
+% nXm-Anovas (15.06.2017)
 
 %% Set CFGs
 
@@ -127,7 +129,7 @@ Mat = zeros(nsub*nIV1*nIV2,4); % Subjects X Conditons
 % IV1
 IV1 = [];
 for g=1:nIV1
-    tmp = ones(nIV1*nsub,1)*g;
+    tmp = repmat((ones(nsub,1)*g),nIV2,1);
     IV1 = [IV1; tmp ];
 end
 Mat(:,2) = IV1; % IV1
@@ -138,7 +140,7 @@ for c=1:nIV2
     tmp = ones(nsub,1)*c;
     IV2 = [IV2; tmp ];
 end
-Mat(:,3) = repmat(IV2,nIV2,1); % IV2
+Mat(:,3) = repmat(IV2,nIV1,1); % IV2
 
 % Subjects
 Subj = [];
