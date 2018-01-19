@@ -28,7 +28,7 @@ function stats = vt_freq_bwANOVA(cfg,varargin)
 % cfg.sgr = [13 20];
 % cfg.ncond = 4;
 % cfg.parameter = 'avg';
-% 
+%
 % stats = vt_freq_bwANOVA(cfg,p_ill{:},...
 %     p_noill{:},...
 %     c_ill{:},..
@@ -43,7 +43,8 @@ function stats = vt_freq_bwANOVA(cfg,varargin)
 % Version 6.: 19.05.2015 - Bug in Freqrange, Text output and Neighbour correction fixed
 % Version 6.1.: 30.05.2016 - Minor Bugs in Channel selection and Correction
 % Version 6.2.: 15.03.2017 - Minor Bugs in CFGs
-% Version 7.: 15.03.2017 - Another Major BugFix in Varargin Sorting 
+% Version 7.: 15.03.2017 - Another Major BugFix in Varargin Sorting
+% Version 7.1.18.01.2018 - Added the misssing latency in line 86 and frequency in line 103
 %% Set CFGs
 ngr = cfg.ngr; % Number of Groups
 sgr = cfg.sgr; % Size of Groups
@@ -58,10 +59,10 @@ else
     alpha = .05;
 end
 
-% Set Correction 
+% Set Correction
 if isfield(cfg,'correctm') % Check for cfg
     correctm = cfg.correctm; % set Method
-    if strcmpi(correctm,'fdr') 
+    if strcmpi(correctm,'fdr')
         fprintf('Using FDR Correction \n')
     elseif strcmpi(correctm,'neighbours') && isfield(cfg,'neighbours')
         neigh = cfg.neighbours; % Use Predefined Neighbours
@@ -75,13 +76,14 @@ if isfield(cfg,'correctm') % Check for cfg
         minnb = cfg.minnb;
     else
         minnb = 1;
-    end 
+    end
 else
     correctm = 'none';
 end
 
 % Set Time Options
 if isfield(cfg,'latency');
+    latency = cfg.latency;
     if isfield(cfg,'avgovertime');
         if strcmpi(cfg.avgovertime,'yes');
             ntime = 1;
@@ -89,15 +91,16 @@ if isfield(cfg,'latency');
         end
     else
     ntime = length(cfg.latency); % How many Time Steps
-    timerange = [nearest(varargin{1}.time,cfg.latency(1)) nearest(varargin{1}.time,cfg.latency(end))]; 
+    timerange = [nearest(varargin{1}.time,cfg.latency(1)) nearest(varargin{1}.time,cfg.latency(end))];
     end
-else       
+else
     ntime = length(varargin{1}.time); % How many Time Steps
-    timerange = 1:ntime;    
+    timerange = 1:ntime;
 end
 
 % Set Frequency Options
 if isfield(cfg,'frequency');
+    frequency = cfg.frequency;
     if isfield(cfg,'avgoverfreq');
         if strcmpi(cfg.avgoverfreq,'yes');
             nfreq = 1;
@@ -105,11 +108,11 @@ if isfield(cfg,'frequency');
         end
     else
     nfreq = length(cfg.frequency); % How many Time Steps
-    freqrange = [nearest(varargin{1}.freq,cfg.frequency(1)) nearest(varargin{1}.freq,cfg.frequency(end))]; 
+    freqrange = [nearest(varargin{1}.freq,cfg.frequency(1)) nearest(varargin{1}.freq,cfg.frequency(end))];
     end
-else       
+else
     nfreq = length(varargin{1}.freq); % How many Freq Steps
-    freqrange = 1:nfreq;    
+    freqrange = 1:nfreq;
 end
 
 % Set Parameter
@@ -137,14 +140,14 @@ if isfield(cfg,'channel');
 %             end
             inchan=cfg.channel;
         end
-        
+
     end
 else
     nchan = size(varargin{1}.(param),1);
     inchan = 1:nchan;
 end
 
-    
+
 %% Prepare Data MAtrix
 % Empty Matrix for Data
 Mat = zeros(nsub*ncond,4); % Subjects X Conditons
@@ -231,12 +234,12 @@ for n = 1:nchan % For Channels
             end
             c = [a;b]; % concatenate the condition vectors
             tmp = c(:); % flatten
-            c = tmp + varind(end); % count up 
+            c = tmp + varind(end); % count up
             varind = [varind;c]; % stitch together
         end
         varind=varind(2:end);
-         
-         
+
+
         ti = nearest(varargin{1}.time,latency(t));
         fi = nearest(varargin{1}.freq,frequency(f));
         for s = 1:length(varind)
@@ -283,7 +286,7 @@ switch correctm
             stats.maskgroup = stats.probgroup<alpha;
             stats.maskcond = stats.probcond<alpha;
             stats.maskint = stats.probint<alpha;
-    case{'fdr'} % Using the FDR method 
+    case{'fdr'} % Using the FDR method
         %  Arnaud Delorme
         fprintf('Using FDR correction for multiple comparisons \n')
             [stats.probgroup_fdr, stats.maskgroup] = vt_fdr(stats.probgroup, alpha);
@@ -306,7 +309,7 @@ switch correctm
                         a(cn) = find(nb(cn) == lab);
                     end
                     % Sort the Indexed Channels
-                    nb_alpha = sort(stats.probgroup(a,:)); 
+                    nb_alpha = sort(stats.probgroup(a,:));
                     if nb_alpha(minnb) < alpha
                         stats.maskgroup(c,f,t,:) = 1;
                     else
@@ -323,7 +326,7 @@ switch correctm
                         a(cn) = find(nb(cn) == lab);
                     end
                     % Sort the Indexed Channels
-                    nb_alpha = sort(stats.probcond(a,:)); 
+                    nb_alpha = sort(stats.probcond(a,:));
                     if nb_alpha(minnb) < alpha
                         stats.maskcond(c,f,t,:) = 1;
                     else
@@ -340,7 +343,7 @@ switch correctm
                         a(cn) = find(nb(cn) == lab);
                     end
                     % Sort the Indexed Channels
-                    nb_alpha = sort(stats.probint(a,:)); 
+                    nb_alpha = sort(stats.probint(a,:));
                     if nb_alpha(minnb) < alpha
                         stats.maskint(c,f,t,:) = 1;
                     else
@@ -361,4 +364,3 @@ stats.dimord = varargin{1}.dimord;
 stats.time = latency;
 stats.freq = frequency;
 stats.label = varargin{1}.label(inchan);
-
