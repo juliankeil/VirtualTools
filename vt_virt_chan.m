@@ -263,13 +263,14 @@ end
 % Hack end
 
 virt=cell(1,length(indata.trial)); % Virtual Electrode
-
-    for p=1:length(lf2.inside)    %loop grid points
-    fprintf('Projecting single trials of Voxel %i\n', p)
-        for k = 1:length(indata.trial)
-            virt{k}(p,:)=source.avg.filter{lf2.inside(p)}*indata.trial{k};
-        end %k
-    end%i
+f = waitbar(0,'Projecting Trials');
+for p=1:length(lf2.inside)    %loop grid points
+  waitbar(p/length(lf2.inside),f,sprintf('Projecting trials for voxel %d',p));
+  for k = 1:length(indata.trial)
+    virt{k}(p,:)=source.avg.filter{lf2.inside(p)}*indata.trial{k};
+  end %k
+end%i
+close(f)
 out=virt;
 
   
