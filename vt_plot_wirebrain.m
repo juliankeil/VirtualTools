@@ -52,10 +52,12 @@ elseif isfield(cfg,'toi')
 end
 
 % Set location option
-if strcmpi(cfg.islocation,'yes')
-    islocation = 'yes';
+if ~isfield(cfg, 'islocation') || strcmp(cfg.islocation,'no')
+  islocation = 'no';
+elseif strcmp(cfg.islocation,'yes')
+  islocation = 'yes';
 else
-    islocation = 'no';
+  error('cfg.islocation should be set to ''yes'' or ''no''.')
 end
 
 % Set Atlas
