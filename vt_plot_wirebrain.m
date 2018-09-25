@@ -60,11 +60,20 @@ end
 
 % Set location option
 if ~isfield(cfg, 'islocation') || strcmp(cfg.islocation,'no')
-  islocation = 'no';
+  islocation = 0;
 elseif strcmp(cfg.islocation,'yes')
-  islocation = 'yes';
+  islocation = 1;
 else
   error('cfg.islocation should be set to ''yes'' or ''no''.')
+end
+
+% Set plot option
+if ~isfield(cfg, 'sourceplot') || strcmp(cfg.sourceplot,'no')
+  sourceplot = 0;
+elseif strcmp(cfg.islocation,'yes')
+  sourceplot = 1;
+else
+  error('cfg.sourceplot should be set to ''yes'' or ''no''.')
 end
 
 % Set Atlas
@@ -92,7 +101,7 @@ end
 
 % Then get the Source IDs
 
-if strcmpi(islocation,'yes')
+if islocation
     ia = 1:length(stats.label);
     ia = ia(im);
 else
@@ -123,7 +132,7 @@ set(hcb,'YTick',[0.00000001 .5 1],'YTickLabel',[mat_s(1) mat_s(ceil(length(mat_s
 
 %% Should there be an ortho-plot as well?
 
-if strcmpi(cfg.sourceplot,'yes');
+if sourceplot
     
     % prepare source-plot
     mri = cfg.mri;
