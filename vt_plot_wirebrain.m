@@ -35,6 +35,13 @@ dummy = cfg.dummy;
 parameter = cfg.parameter;
 indata = stats.(parameter);
 
+% check format of headmodel positions
+if isfield(vol.bnd(1), 'pos')
+  posfield = 'pos';
+elseif isfield(vol.bnd(1), 'pnt')
+  posfield = 'pnt';
+end
+
 if isfield(cfg,'freq')
     freq=nearest(stats.freq,cfg.freq(1));
     if length(cfg.freq) > 1
@@ -97,9 +104,9 @@ end
 % First Check for FT-Version
 % The Plot the Wiremesh
 if exist('ft_triplot') == 0 % Check which version of triplot is available
-    triplot(vol.bnd(3).pnt, vol.bnd(3).tri,  [], 'edges');
+    triplot(vol.bnd(3).(posfield), vol.bnd(3).tri,  [], 'edges');
 else
-    ft_triplot(vol.bnd(3).pnt, vol.bnd(3).tri,  [], 'edges');
+    ft_triplot(vol.bnd(3).(posfield), vol.bnd(3).tri,  [], 'edges');
 end
 
 hold; % Hold the Wiremesh
