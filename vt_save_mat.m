@@ -1,4 +1,4 @@
-function[]= vt_save_mat(mat,filename);
+function[]= vt_save_mat(mat,filename)
 % based on save_mat by Stephan Moratti
 % usage: save_mat(mat,filename);
 % mat =  datamatrix
@@ -19,7 +19,9 @@ if iscell(mat) == 1
             else
                 fprintf(fid,mat{l,c});
             end
-            fprintf(fid,'\t');
+            if c<columns % don't print tab for rightmost column
+                fprintf(fid,'\t');
+            end
         end
         fprintf(fid,'\n');
     end
