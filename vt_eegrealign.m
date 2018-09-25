@@ -30,13 +30,20 @@ if isfield(cfg,'channel')
     elec_old.chanpos = elec_old.chanpos(cfg.channel,:);
 end
 
+% check format of headmodel positions
+if isfield(vol.bnd(1), 'pos')
+  posfield = 'pos';
+elseif isfield(vol.bnd(1), 'pnt')
+  posfield = 'pnt';
+end
+
 %% Check Units!
 if ~strcmpi(vol.unit,elec_old.unit)
     elec_old = ft_convert_units(elec_old, vol.unit); % Make sure its all the same!
 end
 %% Align using Dan's code
 % First we're getting a bit more info on the mesh, i.e. midpoints etc.
-mrifid.hsp = PrepareTriangleMesh(vol.bnd(1).pnt,vol.bnd(1).tri);
+mrifid.hsp = PrepareTriangleMesh(vol.bnd(1).(posfield),vol.bnd(1).tri);
   
 % Then we'll loop through the channels
 for i = 1:length(elec_old.chanpos)
@@ -52,9 +59,9 @@ end
 if isfield(cfg,'plot')
     if strcmpi(cfg.plot,'yes')
         figure
-        triplot(vol.bnd(3).pnt, vol.bnd(3).tri,  [], 'faces_skin');
+        triplot(vol.bnd(3).(posfield), vol.bnd(3).tri,  [], 'faces_skin');
         hold
-        triplot(vol.bnd(1).pnt, vol.bnd(1).tri,  [], 'edges');
+        triplot(vol.bnd(1).(posfield), vol.bnd(1).tri,  [], 'edges');
         plot3(elec_old.elecpos(:,1),elec_old.elecpos(:,2),elec_old.elecpos(:,3),'r.','MarkerSize',20)
         plot3(mrSensorCoord(:,1),mrSensorCoord(:,2),mrSensorCoord(:,3),'b.','MarkerSize',20)
         camlight left
