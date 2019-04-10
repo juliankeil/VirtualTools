@@ -124,6 +124,7 @@ if strcmpi(cfg.sourceplot,'yes');
         end
         dummy.avg.pow2(dummy.inside(b)) = mat;
     else
+        dummy.avg.pow2 = dummy.avg.pow;
         dummy.avg.pow2(dummy.inside) = mat;
     end
         
@@ -144,7 +145,7 @@ if strcmpi(cfg.sourceplot,'yes');
     end
     
     tmpcfg = [];
-    tmpcfg.parameter = 'avg.pow2';
+    tmpcfg.parameter = 'pow2';
     tmpcfg.downsample = 1;
     
     dummy_i = ft_sourceinterpolate(tmpcfg,dummy,mri);
@@ -155,9 +156,9 @@ if strcmpi(cfg.sourceplot,'yes');
     
     % And Plot the Ortho
     tmpcfg = [];
-    tmpcfg.method='slice';
+    tmpcfg.method='ortho';
     %tmpcfg.surffile = 'surface_l4_both.mat';
-    tmpcfg.funparameter = 'avg.pow2';
+    tmpcfg.funparameter = 'pow2';
     tmpcfg.maskparameter = tmpcfg.funparameter;
     tmpcfg.atlas = atlas;
     
