@@ -55,11 +55,11 @@ end
 
 % Then plot
 % First Check for FT-Version
-% The Plot the Wiremesh
-if exist('ft_triplot') == 0 % Check which version of triplot is available
-    triplot(vol.bnd(3).pnt, vol.bnd(3).tri,  [], 'edges');
+% Plot the Wiremesh
+if exist('vt_triplot') == 0 % Check which version of triplot is available
+    triplot(vol.bnd(3).pos, vol.bnd(3).tri,  [], 'edges');
 else
-    ft_triplot(vol.bnd(3).pnt, vol.bnd(3).tri,  [], 'edges');
+    vt_triplot(vol.bnd(3).pos, vol.bnd(3).tri,  [], 'edges');
 end
 
 hold; % Hold the Wiremesh
