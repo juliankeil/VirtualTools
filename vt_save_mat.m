@@ -3,7 +3,6 @@ function[]= vt_save_mat(mat,filename)
 % usage: save_mat(mat,filename);
 % mat =  datamatrix
 % filename = filename (full path)
-% This function will generate a Tab-delimited file with data rounded to 4 decimals
 %
 % Julian Keil 2016
 %%
@@ -31,6 +30,9 @@ else
     for l=1:lines
         for c = 1:columns
             fprintf(fid,'%.4f ',mat(l,c));
+            if c<columns % don't print tab for rightmost column
+                fprintf(fid,'\t');
+            end
         end
         fprintf(fid,'\n');
     end
