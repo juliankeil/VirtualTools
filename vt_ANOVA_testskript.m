@@ -4,6 +4,8 @@ erp1_1 = [];
 erp1_2 = [];
 erp2_1 = [];
 erp2_2 = [];
+erp3_1 = [];
+erp3_2 = [];
 load Berlin_EEG_Head
 
 %% Lets loop 20 Subjects
@@ -50,17 +52,23 @@ for vp = 1:20;
             data1_2.trial{t}(c,:)=sig{t}+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
             data2_1.trial{t}(c,:)=sig{t}+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
             data2_2.trial{t}(c,:)=sig{t}+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
+            data3_1.trial{t}(c,:)=sig{t}+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
+            data3_2.trial{t}(c,:)=sig{t}+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
         end
         for c=[1,2,3,4,5,36,37,10,24,91,52];
             data1_1.trial{t}(c,:)=sig{t}+(y4*scalef(c))+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
             data1_2.trial{t}(c,:)=sig{t}+(y5*scalef(c))+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
             data2_1.trial{t}(c,:)=sig{t}+(y6*scalef(c))+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
             data2_2.trial{t}(c,:)=sig{t}+(y7*scalef(c))+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
+            data3_1.trial{t}(c,:)=sig{t}+(((y6+y4)/2)*scalef(c))+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
+            data3_2.trial{t}(c,:)=sig{t}+(((y7+y5)/2.1)*scalef(c))+(0+0.2.*randn(1,length(sig{1}))); % Signal is pink noise plus the scaled ERP plus some noise
         end
         data1_1.time{t}= -0.5:0.003:0.499;
         data1_2.time{t}= -0.5:0.003:0.499;
         data2_1.time{t}= -0.5:0.003:0.499;
         data2_2.time{t}= -0.5:0.003:0.499;
+        data3_1.time{t}= -0.5:0.003:0.499;
+        data3_2.time{t}= -0.5:0.003:0.499;
     end
 
     %% 2.4. Add the rest
@@ -75,6 +83,12 @@ for vp = 1:20;
 
     data2_2.label=elec_126.label;
     data2_2.fsample=length(sig{1});
+    
+    data3_1.label=elec_126.label;
+    data3_1.fsample=length(sig{1});
+
+    data3_2.label=elec_126.label;
+    data3_2.fsample=length(sig{1});
 
     %% ERP
     erp1_1{vp}=ft_timelockanalysis([],data1_1);
@@ -82,6 +96,9 @@ for vp = 1:20;
     
     erp2_1{vp}=ft_timelockanalysis([],data2_1);
     erp2_2{vp}=ft_timelockanalysis([],data2_2);
+    
+    erp3_1{vp}=ft_timelockanalysis([],data2_1);
+    erp3_2{vp}=ft_timelockanalysis([],data2_2);
     
 end
 
@@ -105,10 +122,10 @@ cfg.nIV2 = 2;
 cfg.parameter = 'avg';
 cfg.alpha = .01;
 cfg.neighbours = neigh;
-cfg.correctm = 'neighbours';
+cfg.correctm = 'fdr';
 cfg.minnb = 1;
 
-stats = vt_time_rmANOVA(cfg,erp1_1{:},erp1_2{:},erp2_1{:},erp2_1{:});
+stats = vt_time_rmANOVA(cfg,erp1_1{:},erp1_2{:},erp2_1{:},erp2_1{:},erp3_1{:},erp3_1{:});
 % Now we have F-Values, p-values (in the prob fields) and a neighbourhood-corrected mask (or FDR-corrected mask, if cfg.correctm = 'fdr')
 
 

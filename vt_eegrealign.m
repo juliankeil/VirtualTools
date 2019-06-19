@@ -59,9 +59,15 @@ end
 if isfield(cfg,'plot')
     if strcmpi(cfg.plot,'yes')
         figure
+<<<<<<< HEAD
         triplot(vol.bnd(3).(posfield), vol.bnd(3).tri,  [], 'faces_skin');
         hold
         triplot(vol.bnd(1).(posfield), vol.bnd(1).tri,  [], 'edges');
+=======
+        triplot(vol.bnd(3).pos, vol.bnd(3).tri,  [], 'faces_skin');
+        hold
+        triplot(vol.bnd(1).pos, vol.bnd(1).tri,  [], 'edges');
+>>>>>>> e5494fcad204b4cfe3b862882b766ed54e17d638
         plot3(elec_old.elecpos(:,1),elec_old.elecpos(:,2),elec_old.elecpos(:,3),'r.','MarkerSize',20)
         plot3(mrSensorCoord(:,1),mrSensorCoord(:,2),mrSensorCoord(:,3),'b.','MarkerSize',20)
         camlight left

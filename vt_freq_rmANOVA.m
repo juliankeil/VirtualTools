@@ -33,6 +33,8 @@ function stats = vt_freq_rmANOVA(cfg,varargin)
 % Version 5.1.: Updated Channel Selection for Neighbour-Correction (12.12.2014
 % Version 5: Major Bugfix in Neighbour-Correction (04.11.2015) 
 % Version 5.1.: Minor Bugfix in Channel options and corection (30.05.2016)
+% Version 6.: Bugfix in the preparation for the Anova-Matrix. Now supports
+% nXm-Anovas (15.06.2017)
 
 %% Make Freq to Time-Freq in case of FFT
 if strcmpi(varargin{1}.dimord,'chan_freq')
@@ -148,7 +150,7 @@ Mat = zeros(nsub*nIV1*nIV2,4); % Subjects X Conditons
 % IV1
 IV1 = [];
 for g=1:nIV1
-    tmp = ones(nIV1*nsub,1)*g;
+    tmp = repmat((ones(nsub,1)*g),nIV2,1);
     IV1 = [IV1; tmp ];
 end
 Mat(:,2) = IV1; % IV1
@@ -159,7 +161,7 @@ for c=1:nIV2
     tmp = ones(nsub,1)*c;
     IV2 = [IV2; tmp ];
 end
-Mat(:,3) = repmat(IV2,nIV2,1); % IV2
+Mat(:,3) = repmat(IV2,nIV1,1); % IV2
 
 % Subjects
 Subj = [];
@@ -168,7 +170,6 @@ for s=1:nIV1*nIV2;
     Subj = [Subj; tmp];
 end
 Mat(:,4) =  Subj; % Subject X Levels
-
 %% Plug in Data
 % Look for the right element and put it into the first column of Mat
 tic

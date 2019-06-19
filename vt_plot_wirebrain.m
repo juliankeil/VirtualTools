@@ -111,6 +111,7 @@ end
 
 % Then plot
 % First Check for FT-Version
+<<<<<<< HEAD
 % The Plot the Wiremesh
 if exist('ft_triplot') == 0 % Check which version of triplot is available
     triplot(vol.bnd(3).(posfield), vol.bnd(3).tri,  [], 'edges');
@@ -142,6 +143,7 @@ if sourceplot
         end
         dummy.avg.pow2(dummy.inside(b)) = mat;
     else
+        dummy.avg.pow2 = dummy.avg.pow;
         dummy.avg.pow2(dummy.inside) = mat;
     end
         
@@ -162,7 +164,7 @@ if sourceplot
     end
     
     tmpcfg = [];
-    tmpcfg.parameter = 'avg.pow2';
+    tmpcfg.parameter = 'pow2';
     tmpcfg.downsample = 1;
     
     dummy_i = ft_sourceinterpolate(tmpcfg,dummy,mri);
@@ -173,9 +175,9 @@ if sourceplot
     
     % And Plot the Ortho
     tmpcfg = [];
-    tmpcfg.method='slice';
+    tmpcfg.method='ortho';
     %tmpcfg.surffile = 'surface_l4_both.mat';
-    tmpcfg.funparameter = 'avg.pow2';
+    tmpcfg.funparameter = 'pow2';
     tmpcfg.maskparameter = tmpcfg.funparameter;
     tmpcfg.atlas = atlas;
     
