@@ -35,6 +35,7 @@ function stats = vt_time_rmANOVA(cfg,varargin)
 % Version 3.1.: More Bugfixes in Correction thanks to Mathis (30.05.2016)
 % Version 4.: Bugfix in the preparation for the Anova-Matrix. Now supports
 % nXm-Anovas (15.06.2017)
+% Version 4.1.: Removed unneccessary time-loops.
 
 %% Set CFGs
 
@@ -184,6 +185,7 @@ for n = 1:nchan % For Channels
     if ntime == 1
         timerange = 1;
     end
+    
     for f = 1:ntime % loop frequencies
         fi = timerange(f);
         for c=1:nIV1*nIV2 % Loop Conditions
@@ -192,34 +194,26 @@ for n = 1:nchan % For Channels
                 tmp_g(sid,1) = varargin{sid}.(param)(inchan(n),fi);  % take the relevant element from the input
             end % for Conditions  
         end % for Subjects
-        tmp{f} = [tmp_g];
-%         dat = [dat; tmp{f}];
-        Mat(:,1) = tmp{f};
-        AnovaMat(f,:,:) = Mat;
-    end
+       
+        Mat(:,1) = tmp_g;
+
     %% Descriptive Stats
-    stats.dimord = 'chan_time';
     
-    for f = 1:ntime
         for g = 1:nIV1
             for c = 1:nIV2 % 
                 % Output is ChannelXFreqXIV1XIV2
-                tmp = mean(AnovaMat(f,(AnovaMat(f,:,3)==c) & (AnovaMat(f,:,2)==g),:));
+                tmp = mean(Mat((Mat(:,3)==c) & (Mat(:,2)==g),:));
                 means(n,f,g,c) = tmp(1); 
-                tmp_z = std(AnovaMat(f,(AnovaMat(f,:,3)==c) & (AnovaMat(f,:,2)==g) ,:));
-                tmp_n = sqrt(length(AnovaMat(AnovaMat(f,:,3)==c & AnovaMat(f,:,2)==g)));
+                tmp_z = std(Mat((Mat(:,3)==c) & (Mat(:,2)==g) ,:));
+                tmp_n = sqrt(length(Mat(Mat(:,3)==c & Mat(:,2)==g)));
                 sems(n,f,g,c) = tmp_z(1)/tmp_n(1);
             end
         end
-    end
-    
-    stats.means = means;
-    stats.sems = sems;
+
     %% Compute the Anova
     % Blantantly used the existing function but commented the output out
     %  Trujillo-Ortiz
-    for f = 1:ntime
-        out = vt_RMAOV2(squeeze(AnovaMat(f,:,:)),alpha); % Hacked Anova Function
+        out = vt_RMAOV2(Mat,alpha); % Hacked Anova Function
 
          %% Put into little boxes
 
@@ -232,8 +226,12 @@ for n = 1:nchan % For Channels
         stats.statint(n,f,:) = out.F3;
         stats.probint(n,f,:) = out.P3;
         stats.dfint(:,n,f) = [out.v5, out.v6];
-    end
-end
+    end % time
+end % channel
+
+stats.means = means;
+stats.sems = sems;
+stats.dimord = 'chan_time';
 
 %% Correction
 switch correctm

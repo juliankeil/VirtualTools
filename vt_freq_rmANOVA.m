@@ -244,7 +244,7 @@ for n = 1:nchan % For Channels
             
             %% Compute the Anova
             % Blantantly used the existing function but commented the output out
-            %  Trujillo-Ort
+            %  Trujillo-Ortiz
             out = vt_RMAOV2(Mat,alpha); % Hacked Anova Function
             
              %% Put into little boxes
