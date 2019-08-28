@@ -116,16 +116,17 @@ neigh = ft_prepare_neighbours(cfg);
 
 %% Compute Stats
 cfg=[];
-cfg.latency = [0.07 .22];
+cfg.latency = [0.07 .16];
 cfg.nIV1 = 2;
 cfg.nIV2 = 2;
 cfg.parameter = 'avg';
-cfg.alpha = .01;
+cfg.alpha = .05;
 cfg.neighbours = neigh;
-cfg.correctm = 'fdr';
-cfg.minnb = 1;
+cfg.correctm = 'cluster';
+cfg.numrandomization = 10;
+cfg.minnb = 2;
 
-stats = vt_time_rmANOVA(cfg,erp1_1{:},erp1_2{:},erp2_1{:},erp2_1{:},erp3_1{:},erp3_1{:});
+stats = vt_time_rmANOVA_tmp(cfg,erp1_1{:},erp1_2{:},erp2_1{:},erp2_1{:},erp3_1{:},erp3_1{:});
 % Now we have F-Values, p-values (in the prob fields) and a neighbourhood-corrected mask (or FDR-corrected mask, if cfg.correctm = 'fdr')
 
 
