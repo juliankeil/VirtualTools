@@ -100,6 +100,22 @@ for vp = 1:20;
     erp3_1{vp}=ft_timelockanalysis([],data2_1);
     erp3_2{vp}=ft_timelockanalysis([],data2_2);
     
+    %% TFR
+    cfg=[];
+    cfg.method='wavelet';
+    cfg.output='pow';
+    cfg.foi=[5:2:40];
+    cfg.toi=[-.5:.01:.5];
+    cfg.pad='nextpow2';
+
+    tfr1_1{vp}=ft_freqanalysis(cfg,data1_1);
+    tfr1_2{vp}=ft_freqanalysis(cfg,data1_2);
+    
+    tfr2_1{vp}=ft_freqanalysis(cfg,data2_1);
+    tfr2_2{vp}=ft_freqanalysis(cfg,data2_2);
+    
+    tfr3_1{vp}=ft_freqanalysis(cfg,data2_1);
+    tfr3_2{vp}=ft_freqanalysis(cfg,data2_2);
 end
 
 %% plot one sibject
@@ -117,16 +133,20 @@ neigh = ft_prepare_neighbours(cfg);
 %% Compute Stats
 cfg=[];
 cfg.latency = [0.07 .16];
-cfg.nIV1 = 2;
-cfg.nIV2 = 2;
+cfg.nIV1 = 3; % 3 Levels on the first factor
+cfg.nIV2 = 2; % 2 Levels on the second factor
 cfg.parameter = 'avg';
 cfg.alpha = .05;
 cfg.neighbours = neigh;
 cfg.correctm = 'cluster';
-cfg.numrandomization = 10;
+cfg.numrandomization = 3;
 cfg.minnb = 2;
 
-stats = vt_time_rmANOVA_tmp(cfg,erp1_1{:},erp1_2{:},erp2_1{:},erp2_1{:},erp3_1{:},erp3_1{:});
+stats = vt_time_rmANOVA(cfg,erp1_1{:},erp1_2{:},erp2_1{:},erp2_1{:},erp3_1{:},erp3_1{:});
+
+cfg.parameter = 'powspctrm';
+cfg.frequency = [25 28];
+stats = vt_freq_rmANOVA(cfg,tfr1_1{:},tfr1_2{:},tfr2_1{:},tfr2_1{:},tfr3_1{:},tfr3_1{:});
 % Now we have F-Values, p-values (in the prob fields) and a neighbourhood-corrected mask (or FDR-corrected mask, if cfg.correctm = 'fdr')
 
 
