@@ -70,7 +70,7 @@ end
 % Set plot option
 if ~isfield(cfg, 'sourceplot') || strcmp(cfg.sourceplot,'no')
   sourceplot = 0;
-elseif strcmp(cfg.islocation,'yes')
+elseif strcmp(cfg.sourceplot,'yes')
   sourceplot = 1;
 else
   error('cfg.sourceplot should be set to ''yes'' or ''no''.')
@@ -111,12 +111,11 @@ end
 
 % Then plot
 % First Check for FT-Version
-<<<<<<< HEAD
 % The Plot the Wiremesh
-if exist('ft_triplot') == 0 % Check which version of triplot is available
+if exist('vt_triplot') == 0 % Check which version of triplot is available
     triplot(vol.bnd(3).(posfield), vol.bnd(3).tri,  [], 'edges');
 else
-    ft_triplot(vol.bnd(3).(posfield), vol.bnd(3).tri,  [], 'edges');
+    vt_triplot(vol.bnd(3).(posfield), vol.bnd(3).tri,  [], 'edges');
 end
 
 hold; % Hold the Wiremesh
