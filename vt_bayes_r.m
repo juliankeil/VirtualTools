@@ -21,6 +21,7 @@ function bf10 = vt_bayes_r(cfg);
 % cfg.r = Set Correlation Value
 % cfg.n = Set Group Size
 % cfg.g = Optional: Set Baysian Prior Value
+% cfg.type = 't' or 'r'; for t-values or r-values
 % bf10 = vt_bayes_r(cfg);
 %
 % Julian Keil, 08.07.2015
@@ -29,6 +30,15 @@ function bf10 = vt_bayes_r(cfg);
 %% Set Basics
 r = cfg.r;
 n = cfg.n;
+
+if strcmpi(cfg.type,'t')% Formula for the t-to-r conversion
+    if (r < 0) 
+        r = r*-1;
+    end
+    
+    R = r^2/(r^2 + n-1);
+    r = sqrt(R);
+end
 
 %% Start Function
 if isfield(cfg,'g')
