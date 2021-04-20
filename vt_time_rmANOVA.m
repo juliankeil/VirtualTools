@@ -13,6 +13,7 @@ function stats = vt_time_rmANOVA_tmp(cfg,varargin)
 % cfg.neighbours = neighbourhood structure for spatial correction
 % cfg.minnb = minimum number of neighbours, default = 1;
 % cfg.numrandomization = number of randomizations; Set to at least 2.
+% cfg.bf = compute the BF10, default = 'yes';
 
 %
 % USE AS:
@@ -476,6 +477,32 @@ switch correctm
 end
 toc
 
+%% Bayes Factor
+if isfield(cfg,'bf') % Check for cfg
+    bf = cfg.bf; % set Method
+    if strcmpi(correctm,'yes') 
+        fprintf('Computing Bayes Factors \n')
+        
+        % Equation 6 in Faulkenberry 2018.
+        tmp = sqrt((nsub.^stats.dfIV1(1,1,1))...
+            .*(1+stats.statIV1.*stats.dfIV1(1,1,1)...
+            ./stats.dfIV1(2,1,1)).^(-nsub));
+        stats.bf10IV1 = 1./tmp;
+
+        tmp = sqrt((nsub.^stats.dfIV1(1,1,1))...
+            .*(1+stats.statIV2.*stats.dfIV1(1,1,1)...
+            ./stats.dfIV1(2,1,1)).^(-nsub));
+        stats.bf10IV2 = 1./tmp;
+        
+        tmp = sqrt((nsub.^stats.dfIV1(1,1,1))...
+            .*(1+stats.statint.*stats.dfIV1(1,1,1)...
+            ./stats.dfIV1(2,1,1)).^(-nsub));
+        stats.bf10int = 1./tmp;
+        
+        
+    elseif strcmpi(correctm,'no')
+    end
+end
 %% add FT-Stuff
 stats.time = varargin{1}.time(timerange);
 stats.label = varargin{1}.label(inchan);
