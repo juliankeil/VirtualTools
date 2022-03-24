@@ -12,6 +12,7 @@ function [data_in] = vt_autoreject(cfg,data_in)
 %
 % Julian Keil, 2022
 % Ver 1.: 10.03.2022: First implementation
+% Ver 1.1.: 24.03.2022: Fixed Typo in Channel selection
 
 %% 0. Set the cfgs
 if exist('cfg')
@@ -72,7 +73,7 @@ if chan_flag == 1
 
     % 1.3. Find good channels
     goodchannels = std_c(:) <= m_std + (thresh*s_std); % Mean + 2.5*STD            
-    fprintf('\n Good channels: %d \n\n',length(goodchannels)); 
+    fprintf('\n Good channels: %d \n\n',sum(goodchannels)); 
 
     % 3.1.1.4. Keep only good channels
     cfg = [];
