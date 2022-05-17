@@ -50,7 +50,10 @@ if exist('cfg')
     end
 end % exist
 
-clear goodchannels goodtrials
+% To start, define all trials and channels as good.
+goodchannels = 1:length(data_in.label);
+goodtrials = 1:length(data_in.trial);
+
 %% 1. First. remove the Channels 
 % We'll restrict this to outliers based on 2.5 STD above the mean
 % First, compute the std across trials for each channel
@@ -126,4 +129,8 @@ if trial_flag == 1
     cfg.trials = goodtrials;
 
     data_in = ft_selectdata(cfg,data_in); % data_psc is the, preprocessed, selected and clean data
+    
 end
+% Save trial and channel selection
+data_in.cfg.goodtrials = goodtrials;
+data_in.cfg.goodchannels = goodchannels;
