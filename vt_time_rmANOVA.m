@@ -87,12 +87,13 @@ if isfield(cfg,'latency')
         if strcmpi(cfg.avgovertime,'yes')
             ntime = 1;
             timerange = [nearest(varargin{1}.time,cfg.latency(1)) nearest(varargin{1}.time,cfg.latency(end))];
+        
+        else
+        %ntime = length(cfg.latency); % How many Time Steps
+        %tstep = varargin{1}.time(2)-varargin{1}.time(1);
+        timerange = nearest(varargin{1}.time,cfg.latency(1)):1:nearest(varargin{1}.time,cfg.latency(end)); 
+        ntime = length(timerange);
         end
-    else
-    %ntime = length(cfg.latency); % How many Time Steps
-    %tstep = varargin{1}.time(2)-varargin{1}.time(1);
-    timerange = nearest(varargin{1}.time,cfg.latency(1)):1:nearest(varargin{1}.time,cfg.latency(end)); 
-    ntime = length(timerange);
     end
 else       
     ntime = length(varargin{1}.time); % How many Time Steps
