@@ -27,9 +27,10 @@ function lf_roi = vt_make_roifield(cfg)
 %
 % Use as:
 %cfg=[];
-%cfg.mri = mri;
-%cfg.vol =vol;
-%cfg.lf = lf_126;
+%cfg.mri = mri; % Standard MRI
+%cfg.vol = vol; % Individual Headmodel
+%cfg.standardvol = standardvol; % Standard Headmodel for plotting
+%cfg.lf = lf_126; % Individual Sourcemodel in Standard Space!
 %cfg.roi = 'Superior Temporal Gyrus';
 %cfg.atlas = '/home/keil/data/programs/Matlab/fieldtrip-20130618/template/atlas/afni/TTatlas+tlrc.BRIK';
 %cfg.hemisphere = 'left';
@@ -45,19 +46,22 @@ function lf_roi = vt_make_roifield(cfg)
 % Version 1.4.: 29.09.2014: Added Box Option
 % Version 1.5.: 18.03.2015: Changed the use of triplot to ft_plot_vol
 % Version 1.6.: 28.09.2016: Fixed an error in the Pythagoras Formula
+% Version 1.7.: 31.05.2023: Updated to new use of ft_prepare_sourcemodel
 
 
 %% Set cfgs
-
+% Load MRI
 mri = cfg.mri;
 
         % Downsample MRI
-
         xfg = [];
         xfg.downsample = 2;
 
         mri = ft_volumedownsample(xfg,mri);
-
+        
+% Load Standard Volume and convert to mm
+standardvol = cfg.standardvol;
+standardvol = ft_convert_units(standardvol,'mm');
         
 lf = cfg.lf;
 vol = cfg.vol;
@@ -128,20 +132,19 @@ template_grad.unit = 'cm';
 % inside/outside detection
 cfg = [];
 %cfg.inwardshift = -0.5;
-cfg.grid.xgrid = vox_min(1):RES:vox_max(1); 
-cfg.grid.ygrid = vox_min(2):RES:vox_max(2); 
-cfg.grid.zgrid = vox_min(3):RES:vox_max(3); 
-cfg.grid.tight = 'no';
+cfg.method = 'basedongrid';
+cfg.xgrid = vox_min(1):RES:vox_max(1); 
+cfg.ygrid = vox_min(2):RES:vox_max(2); 
+cfg.zgrid = vox_min(3):RES:vox_max(3);
+cfg.tight = 'no';
+cfg.headmodel = vol;
+cfg.grad = template_grad;
 
-template_grid = ft_prepare_sourcemodel(cfg,vol,template_grad);
+template_grid = ft_prepare_sourcemodel(cfg);
 
-%% Convert to mm
+%% Convert to mm if lf is in mm
 if strcmpi(lf.unit,'mm')
-    template_grid.pos = template_grid.pos*10; % cm -> mm
-    template_grid.xgrid = template_grid.xgrid*10; % cm -> mm
-    template_grid.ygrid = template_grid.ygrid*10; % cm -> mm
-    template_grid.zgrid = template_grid.zgrid*10; % cm -> mm
-    template_grid.unit = 'mm';
+    template_grid = ft_convert_units(template_grid,'mm');
 end
 
 %% Get the ROI based on atlas
@@ -225,7 +228,7 @@ end
 
 %%
  figure
- ft_plot_vol(vol, 'edgecolor', 'none'); alpha 0.3;
+ ft_plot_headmodel(standardvol, 'edgecolor', 'none'); alpha 0.3;
  hold
  plot3(lf.pos(index_ROI,1),lf.pos(index_ROI,2),lf.pos(index_ROI,3),'r.','MarkerSize',20)
  camlight left
