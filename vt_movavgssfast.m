@@ -125,4 +125,5 @@ end
 
 % Collect the output
 datamovavg.avg = mean(datatimecourse,3,'omitnan');
+datamovavg.fsample = samprat;
 
