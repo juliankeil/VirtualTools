@@ -47,7 +47,7 @@ function lf_roi = vt_make_roifield(cfg)
 % Version 1.5.: 18.03.2015: Changed the use of triplot to ft_plot_vol
 % Version 1.6.: 28.09.2016: Fixed an error in the Pythagoras Formula
 % Version 1.7.: 31.05.2023: Updated to new use of ft_prepare_sourcemodel
-
+% and added wait bar
 
 %% Set cfgs
 % Load MRI
@@ -151,11 +151,11 @@ end
 switch roitype
     case(1)
         cfg=[];
-        cfg.atlas =atlas;
+        cfg.atlas = atlas;
         cfg.inputcoord = 'mni';
         cfg.roi = ROIdef;
 
-    ROI = ft_volumelookup(cfg,mri);
+        ROI = ft_volumelookup(cfg,mri);
     
     case(2)
         ROI = ROIdef.anatomy;  
@@ -179,14 +179,19 @@ switch roitype
 end
 %% Now the funky part: Use 3D-Pythagoras s=sqrt((X2-X1)²+(Y2-Y1)²+(Z2-Z1)²)
 % to compute the distance between the template_grid and the pre-computed leadfield
+f = waitbar(0,'Calculating distance...');
+l = length(lf.inside);
+data = zeros(l,1);
 
 for i=1:length(lf.inside)
-    fprintf('Getting the position of Point %i of %i\n',i,length(lf.inside))
+    %fprintf('Getting the position of Point %i of %i\n',i,length(lf.inside))
+    waitbar(i/length(lf.inside),f,sprintf('Getting the position of Point %i of %i',i,l));
     vox = lf.inside(i);
     dist = sqrt(sum((ones(size(template_grid.pos,1),1)*lf.pos(vox,:) - template_grid.pos ).^2,2));
-    [dummy,index] = min(dist);
-    data(i) = ROI(index);
+    [dummy,index(i)] = min(dist);
+    data(i) = ROI(index(i));
 end
+close(f)
 
 %% Some Clean-Up
 % divide all points in data by maximum within data -> Normalize to [0 1]

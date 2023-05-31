@@ -28,6 +28,8 @@ function vt_plot_wirebrain(cfg,stats)
 %                               Added Time-Option
 % Version 1.4.: June 2014:      Added Frequency-Band Option
 % Version 1.5.: July 2015:      Added Atlas Option
+% Version 1.6.: 31.05.2023:     Fixed some issues with the channel
+% positions
 
 
 vol=cfg.vol;
@@ -121,8 +123,9 @@ end
 hold; % Hold the Wiremesh
 
 % And now plot the indata values to each point
+dummy.pos2 = dummy.pos(dummy.inside,:); 
 for c=1:length(mat_s)
-    plot3(dummy.pos(ia(c),1),dummy.pos(ia(c),2),dummy.pos(ia(c),3),'*','Color',hot2(c,:),'LineWidth',5);
+    plot3(dummy.pos2(ia(c),1),dummy.pos2(ia(c),2),dummy.pos2(ia(c),3),'*','Color',hot2(c,:),'LineWidth',5);
 end
 
 % Plot the Colorbar
