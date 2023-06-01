@@ -87,15 +87,16 @@ if strcmpi(cfg.sourceplot,'yes');
     
     % prepare source-plot
     mri = cfg.mri;
-    dummy.avg.pow2(dummy.inside) = 0;
-    dummy.avg.pow2(dummy.outside) = NaN;
-    dummy.avg.pow2(sourcelab) = mean(mat_s);
+    dummy.vals(dummy.inside) = 0;
+    dummy.vals(dummy.outside) = NaN;
+    dummy.vals(sourcelab) = mean(mat_s);
     for s=1:length(sinklab)
-        dummy.avg.pow2(sinklab{s}) = mat_s(end-s);
+        dummy.vals(sinklab{s}) = mat_s(end-s);
     end
+    dummy.vals = dummy.vals';
     
     tmpcfg = [];
-    tmpcfg.parameter = 'avg.pow2';
+    tmpcfg.parameter = 'vals';
     tmpcfg.downsample = 1;
     
     dummy_i = ft_sourceinterpolate(tmpcfg,dummy,mri);
@@ -103,7 +104,7 @@ if strcmpi(cfg.sourceplot,'yes');
     % And Plot the Ortho
     tmpcfg = [];
     tmpcfg.method='ortho';
-    tmpcfg.funparameter = 'avg.pow2';
+    tmpcfg.funparameter = 'vals';
     tmpcfg.maskparameter = tmpcfg.funparameter;
     
     ft_sourceplot(tmpcfg,dummy_i);
