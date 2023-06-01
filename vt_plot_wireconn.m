@@ -24,6 +24,7 @@ function jk_plot_wireconn(cfg,stats)
 %                               Added Ortho-Plot Option
 % Version 1.3.: November 2013: 
 %                               Added Support for multiple Sinks
+% Version 1.4.: 01.06.2023:     Fixed Ortho-Plot 
 
 freq=nearest(stats.freq,cfg.freq);
 vol=cfg.vol;
