@@ -59,16 +59,16 @@ ft_nargout  = nargout;
 
 % do the general setup of the function
 ft_defaults
-ft_preamble init
-ft_preamble debug
-ft_preamble loadvar varargin
-ft_preamble provenance varargin
-ft_preamble trackconfig
+% ft_preamble init
+% ft_preamble debug
+% ft_preamble loadvar varargin
+% ft_preamble provenance varargin
+% ft_preamble trackconfig
 
 % the ft_abort variable is set to true or false in ft_preamble_init
-if ft_abort
-  return
-end
+% if ft_abort
+%   return
+% end
 
 % check if the input data is valid for this function
 % Connectivity does not have a datatype
@@ -233,9 +233,9 @@ elseif strcmp(cfg.keepindividual, 'no')
 end
 
 % do the general cleanup and bookkeeping at the end of the function
-ft_postamble debug
-ft_postamble trackconfig
-ft_postamble previous   varargin
-ft_postamble provenance grandavg
-ft_postamble history    grandavg
-ft_postamble savevar    grandavg
+% ft_postamble debug
+% ft_postamble trackconfig
+% ft_postamble previous   varargin
+% ft_postamble provenance grandavg
+% ft_postamble history    grandavg
+% ft_postamble savevar    grandavg

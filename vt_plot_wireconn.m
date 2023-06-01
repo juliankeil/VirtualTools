@@ -66,7 +66,7 @@ end
 hold; % Hold the Wiremesh
 
 % Plot the Grid
-plot3(dummy.pos(dummy.inside,1),dummy.pos(dummy.inside,2),dummy.pos(dummy.inside,3),'b*','LineWidth',1,'Color',[.5 .5 .5]);
+plot3(dummy.pos(dummy.inside,1),dummy.pos(dummy.inside,2),dummy.pos(dummy.inside,3),'b.','LineWidth',1,'Color',[.5 .5 .5]);
 plot3(dummy.pos(sourcelab,1),dummy.pos(sourcelab,2),dummy.pos(sourcelab,3),'g*','LineWidth',5);
 
 % And now plot the connectivity lines
