@@ -137,6 +137,11 @@ set(hcb,'YTick',[0.00000001 .5 1],'YTickLabel',[mat_s(1) mat_s(ceil(length(mat_s
 
 if sourceplot
     
+    if islogical(dummy.inside)
+        dummy.outside = find(dummy.inside == 0);
+        dummy.inside = find(dummy.inside == 1);
+    end
+
     % prepare source-plot
     mri = cfg.mri;
     if length(mat) < length(dummy.inside)

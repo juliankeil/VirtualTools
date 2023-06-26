@@ -152,7 +152,7 @@ switch roitype
     case(1)
         cfg=[];
         cfg.atlas = atlas;
-        cfg.inputcoord = 'mni';
+        %cfg.inputcoord = 'mni';
         cfg.roi = ROIdef;
 
         ROI = ft_volumelookup(cfg,mri);
@@ -162,7 +162,7 @@ switch roitype
         
     case(3)
         cfg=[];
-        cfg.inputcoord = 'mni';
+        %cfg.inputcoord = 'mni';
         cfg.roi = ROIdef;
         cfg.sphere = ROIrad; % Radius of Sphere
 
@@ -170,7 +170,7 @@ switch roitype
         
     case(4)
         cfg=[];
-        cfg.inputcoord = 'mni';
+        %cfg.inputcoord = 'mni';
         cfg.roi = ROIdef;
         cfg.box = ROIrad; % Radius of Sphere
 
@@ -232,12 +232,16 @@ switch hem
 end
 
 %%
- figure
- ft_plot_headmodel(standardvol, 'edgecolor', 'none'); alpha 0.3;
- hold
- plot3(lf.pos(index_ROI,1),lf.pos(index_ROI,2),lf.pos(index_ROI,3),'r.','MarkerSize',20)
- camlight left
- view([-90 0]);
+if isfield(cfg,'plot')
+    if strcmpi(cfg.plot,'yes')
+        figure;
+        ft_plot_headmodel(standardvol, 'edgecolor', 'none'); alpha 0.3;
+        hold
+        plot3(lf.pos(index_ROI,1),lf.pos(index_ROI,2),lf.pos(index_ROI,3),'r.','MarkerSize',20)
+        camlight left
+        view([-90 0]);
+    end
+end
  
  %% Output
  
