@@ -231,7 +231,7 @@ switch hem
         mask_ROI(index_ROI) = 1;
 end
 
-%%
+%% Should we make a plot?
 if isfield(cfg,'plot')
     if strcmpi(cfg.plot,'yes')
         figure;
