@@ -97,7 +97,13 @@ else
     hem = 'both';
 end
 
-
+if isfield(cfg,'plot')
+    if strcmpi(cfg.plot,'yes')
+        doplot = 1;
+    end
+else
+    doplot = 0;
+end
 %% Set the start and End of the x,y,z axis
 vox1 = mri.transform*[mri.dim,1]'; % start
 vox1 = vox1(1:3)/10; % convert to mm
@@ -210,20 +216,20 @@ mask(index)=1;
 
 switch hem
     case{'both'} 
-        fprintf('ROI is on both hemispheres')
+        fprintf('ROI is on both hemispheres \n')
         temp = lf.pos(lf.inside(index),:);
         index_ROI = lf.inside(index);
         mask_ROI = zeros(size(data));
         mask_ROI(index_ROI) = 1;
     case{'left'}
-        fprintf('ROI is on left hemisphere')
+        fprintf('ROI is on left hemisphere \n')
         temp = lf.pos(lf.inside(index),:);
         temp_i =  index(temp(:,1)<0);
         index_ROI = lf.inside(temp_i);
         mask_ROI = zeros(size(data));
         mask_ROI(index_ROI) = 1;
     case{'right'}
-        fprintf('ROI is on right hemisphere')
+        fprintf('ROI is on right hemisphere \n')
         temp = lf.pos(lf.inside(index),:);
         temp_i =  index(temp(:,1)>0);
         index_ROI = lf.inside(temp_i);
@@ -232,15 +238,13 @@ switch hem
 end
 
 %% Should we make a plot?
-if isfield(cfg,'plot')
-    if strcmpi(cfg.plot,'yes')
-        figure;
-        ft_plot_headmodel(standardvol, 'edgecolor', 'none'); alpha 0.3;
-        hold
-        plot3(lf.pos(index_ROI,1),lf.pos(index_ROI,2),lf.pos(index_ROI,3),'r.','MarkerSize',20)
-        camlight left
-        view([-90 0]);
-    end
+if doplot == 1
+    figure;
+    ft_plot_headmodel(standardvol, 'edgecolor', 'none'); alpha 0.3;
+    hold
+    plot3(lf.pos(index_ROI,1),lf.pos(index_ROI,2),lf.pos(index_ROI,3),'r.','MarkerSize',20)
+    camlight left
+    view([-90 0]);
 end
  
  %% Output

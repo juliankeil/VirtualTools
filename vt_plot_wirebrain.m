@@ -172,7 +172,7 @@ if sourceplot
     
     tmpcfg = [];
     tmpcfg.parameter = 'pow2';
-    tmpcfg.downsample = 1;
+    %tmpcfg.downsample = 1;
     
     dummy_i = ft_sourceinterpolate(tmpcfg,dummy,mri);
     
@@ -185,7 +185,7 @@ if sourceplot
     tmpcfg.method='ortho';
     %tmpcfg.surffile = 'surface_l4_both.mat';
     tmpcfg.funparameter = 'pow2';
-    tmpcfg.maskparameter = tmpcfg.funparameter;
+    %tmpcfg.maskparameter = tmpcfg.funparameter;
     tmpcfg.atlas = atlas;
     
     ft_sourceplot(tmpcfg,dummy_i);
