@@ -219,6 +219,7 @@ for r = 1:nrand
     randvec = randperm(length(Mat(:,1)));
     fprintf('Statistical Stuff: Permutation %i \n', r)
     for n = 1:nchan % For Channels
+        fprintf('Channel %i \n', n)
         %dat = [];
         %tmp = [];
         if ntime == 1
@@ -481,7 +482,7 @@ toc
 %% Bayes Factor
 if isfield(cfg,'bf') % Check for cfg
     bf = cfg.bf; % set Method
-    if strcmpi(correctm,'yes') 
+    if ~strcmpi(correctm,'none') 
         fprintf('Computing Bayes Factors \n')
         
         % Equation 6 in Faulkenberry 2018.
@@ -501,7 +502,7 @@ if isfield(cfg,'bf') % Check for cfg
         stats.bf10int = 1./tmp;
         
         
-    elseif strcmpi(correctm,'no')
+    elseif strcmpi(correctm,'none')
     end
 end
 %% add FT-Stuff

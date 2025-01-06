@@ -138,6 +138,7 @@ cfg.nIV2 = 2; % 2 Levels on the second factor
 cfg.parameter = 'avg';
 cfg.alpha = .05;
 cfg.neighbours = neigh;
+cfg.bf = 'yes';
 cfg.correctm = 'cluster';
 cfg.numrandomization = 3;
 cfg.minnb = 2;

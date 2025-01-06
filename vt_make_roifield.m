@@ -100,6 +100,8 @@ end
 if isfield(cfg,'plot')
     if strcmpi(cfg.plot,'yes')
         doplot = 1;
+    else
+        doplot = 0;
     end
 else
     doplot = 0;
